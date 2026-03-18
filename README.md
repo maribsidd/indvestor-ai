@@ -36,36 +36,3 @@ indvestor-ai/
         ├── radar.js    Signal detection
         └── patterns.js Pattern analysis
 ```
-
-## Setup
-
-**Frontend only (no backend required for demo):**
-```
-open index.html
-```
-The chat page calls the Anthropic API directly from the browser for demo purposes.
-
-**Full backend:**
-```bash
-cd backend
-cp .env.example .env
-# Add your ANTHROPIC_API_KEY to .env
-npm install
-npm start
-```
-Server runs on `http://localhost:3000`.
-
-**Swap in live NSE data:**
-- Replace mock OHLCV in `backend/routes/patterns.js` with NSE chart API
-- Replace mock filings in `backend/routes/radar.js` with BSE/NSE corporate filing feeds
-- NSE public API base: `https://www.nseindia.com/api/`
-
-## GitHub
-
-```bash
-git init
-git add .
-git commit -m "feat: IndVestor AI — ET Markets hackathon build"
-git remote add origin https://github.com/maribsidd/indvestor-ai.git
-git push -u origin main
-```
