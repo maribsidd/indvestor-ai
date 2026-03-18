@@ -1,115 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const Anthropic = require('@anthropic-ai/sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-// In production: replace with live NSE/BSE filing API calls
-// e.g. NSE Corporate Filing API, BSE API, or a data provider like Tickertape/Screener
-const MOCK_FILINGS = [
-  {
-    stock: 'BAJAJFINSV', exchange: 'NSE', type: 'insider_trade',
-    raw: 'CFO purchased 14,200 shares at ₹2,958 on 18-Jan-2025 via secondary market',
-    timestamp: new Date().toISOString()
-  },
-  {
-    stock: 'RELIANCE', exchange: 'NSE', type: 'bulk_deal',
-    raw: 'GIC Singapore acquired 8,20,000 shares at ₹2,910 via block deal on 19-Jan-2025',
-    timestamp: new Date().toISOString()
-  },
-  {
-    stock: 'HDFCBANK', exchange: 'NSE', type: 'quarterly_filing',
-    raw: 'Q3 FY25: Gross NPA 1.26% vs 1.42% prev quarter. MD commentary: comfortable capital adequacy, loan book expansion confidence',
-    timestamp: new Date().toISOString()
-  },
-  {
-    stock: 'ADANIPORTS', exchange: 'NSE', type: 'regulatory',
-    raw: 'SEBI clarification notice on ₹1,420 Cr related-party transactions in Q2 FY25 filing',
-    timestamp: new Date().toISOString()
-  },
+const SIGNALS = [
+  {stock:'BAJAJFINSV',type:'insider',signal:'STRONG BUY',confidence:82,title:'CFO Accumulation — 2nd Consecutive Month',summary:'CFO purchased 14,200 shares worth Rs 4.2 Cr at Rs 2,958. Second consecutive month of C-suite buying.',action:'Add to watchlist. Confirm with next quarterly result before entry.'},
+  {stock:'RELIANCE',type:'bulk',signal:'WATCH',confidence:71,title:'Foreign Fund Accumulates in Block Deal',summary:'GIC Singapore acquired 8.2L shares at Rs 2,910 via block deal. Deal size is 2.4x the 3-month average.',action:'Suitable for medium-term investors. Support at Rs 2,890.'},
+  {stock:'HDFCBANK',type:'filing',signal:'ACCUMULATE',confidence:76,title:'NPA Improvement + Guidance Upgrade in Q3 Filing',summary:'Gross NPA fell to 1.26% from 1.42% QoQ. MD commentary signals loan book expansion confidence.',action:'Strong sector. Consider on dips to Rs 1,620.'},
+  {stock:'ADANIPORTS',type:'regulatory',signal:'RISK FLAG',confidence:34,title:'SEBI Seeks Clarification on Related-Party Transactions',summary:'SEBI issued notice on Rs 1,420 Cr in logistics contracts awarded to Adani group entities.',action:'Reduce exposure or hedge. Monitor for resolution before re-entry.'},
+  {stock:'TITAN',type:'mgmt',signal:'POSITIVE',confidence:68,title:'Promoter Commentary Shift: Capex Acceleration',summary:'Board approved 80 new Tanishq outlets with Rs 340 Cr CapEx. Management uses aggressive premiumisation language.',action:'Monitor for entry near Rs 3,380 support. Long-term buy.'},
+  {stock:'COALINDIA',type:'bulk',signal:'BUY',confidence:58,title:'LIC Adds to Position — Contra Signal',summary:'LIC added 1.1 Cr shares at Rs 485.50 worth Rs 534 Cr. PSU underperformed Nifty by 8% in 30 days.',action:'Suitable for value investors. Dividend yield 6.2% provides downside buffer.'}
 ];
 
-// GET /api/radar/signals — returns AI-analysed signals
-router.get('/signals', async (req, res) => {
+router.get('/signals', (req, res) => {
   const { category = 'all' } = req.query;
-  let filings = MOCK_FILINGS;
-  if (category !== 'all') {
-    filings = filings.filter(f => f.type === category);
-  }
-
-  try {
-    // Batch-analyse filings with Claude
-    const prompt = `You are a market signal detector. Analyse these NSE/BSE events and for each one return a JSON array:
-[{
-  "stock": "...",
-  "type": "...",
-  "signal": "STRONG BUY | BUY | WATCH | RISK FLAG | NEUTRAL",
-  "confidence": 0-100,
-  "title": "short compelling title (max 12 words)",
-  "summary": "2-sentence analysis",
-  "action": "specific recommended action with price level"
-}]
-
-Events:
-${filings.map((f, i) => `${i + 1}. ${f.stock} (${f.type}): ${f.raw}`).join('\n')}
-
-Return ONLY the JSON array. No markdown.`;
-
-    const resp = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }]
-    });
-
-    let signals;
-    try {
-      signals = JSON.parse(resp.content[0].text);
-    } catch {
-      signals = filings.map(f => ({
-        stock: f.stock,
-        type: f.type,
-        signal: 'WATCH',
-        confidence: 60,
-        title: `${f.stock} — ${f.type.replace('_', ' ')}`,
-        summary: f.raw,
-        action: 'Monitor for further developments.'
-      }));
-    }
-
-    res.json({ signals, count: signals.length, timestamp: new Date().toISOString() });
-  } catch (err) {
-    console.error('Radar error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
+  const filtered = category === 'all' ? SIGNALS : SIGNALS.filter(s => s.type === category);
+  res.json({ signals: filtered, count: filtered.length, timestamp: new Date().toISOString() });
 });
 
-// POST /api/radar/analyse — deep-analyse a specific signal
-router.post('/analyse', async (req, res) => {
-  const { stock, event, context } = req.body;
-  if (!stock || !event) return res.status(400).json({ error: 'stock and event required' });
-
-  try {
-    const resp = await client.messages.create({
-      model: 'claude-opus-4-5',
-      max_tokens: 800,
-      system: 'You are a senior equity analyst specialising in Indian markets. Provide deep, specific analysis.',
-      messages: [{
-        role: 'user',
-        content: `Deep analyse this market event for ${stock}: "${event}". ${context ? `Context: ${context}` : ''}
-        
-        Give:
-        1. What this means for the stock short-term (2-4 weeks)
-        2. What this means long-term (6-12 months)  
-        3. Historical precedent for this type of event
-        4. Specific entry zone, target, and stop-loss
-        5. Risk factors to watch`
-      }]
-    });
-
-    res.json({ analysis: resp.content[0].text, stock, timestamp: new Date().toISOString() });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+router.post('/analyse', (req, res) => {
+  const { stock } = req.body;
+  const sig = SIGNALS.find(s => s.stock === stock);
+  if (!sig) return res.status(404).json({ error: 'Stock not found' });
+  res.json({ analysis: sig.summary + ' ' + sig.action, stock, timestamp: new Date().toISOString() });
 });
 
 module.exports = router;

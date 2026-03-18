@@ -82,6 +82,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
   </div>
   <div class="user-dot">A</div>
 </nav>
+<div id="profileDropdown" style="display:none;position:fixed;top:60px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:999;min-width:220px"></div>
 <div class="ticker-wrap" id="tickerWrap">
   <div class="ticker-inner" id="tickerInner"></div>
 </div>
@@ -162,5 +163,7 @@ setTimeout(()=>{
   document.getElementById('app').style.display='block';
 },1900);
 </script>
+
+<script src="nav.js"></script>
 </body>
 </html>

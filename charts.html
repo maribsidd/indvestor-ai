@@ -105,6 +105,7 @@ canvas{width:100%;height:160px;display:block}
   </div>
   <div class="user-dot">A</div>
 </nav>
+<div id="profileDropdown" style="display:none;position:fixed;top:60px;right:16px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:999;min-width:220px"></div>
 
 <div class="layout">
   <!-- STOCK PANEL -->
@@ -176,7 +177,7 @@ const analyses={
       {label:'50 EMA',val:'₹1,392',sig:'Below',col:'dn'},{label:'200 EMA',val:'₹1,318',sig:'Above',col:'up'},
       {label:'Volume',val:'0.7×',sig:'Below Avg',col:'dn'},{label:'ADX',val:'22.1',sig:'Weak Trend',col:'dn'},
     ],
-    chartData:[1310,1340,1370,1380,1360,1375,1390,1410,1423,1405,1390,1385,1380,1378,1375,1380,1378,1378],
+    chartData:[1423,1418,1410,1405,1415,1408,1400,1395,1403,1398,1390,1385,1392,1388,1380,1378,1375,1378],
   }
 };
 
@@ -184,25 +185,57 @@ const defaultAnalysis=analyses.RELIANCE;
 let curSym='RELIANCE';
 let filteredStocks=[...stocks];
 
-function drawChart(data,color='#00d4aa'){
-  const c=document.getElementById('miniChart');
-  if(!c)return;
-  const ctx=c.getContext('2d');
-  const W=c.width=c.offsetWidth*2;const H=c.height=320;
-  ctx.clearRect(0,0,W,H);
-  const min=Math.min(...data),max=Math.max(...data),range=max-min;
-  const pts=data.map((v,i)=>({x:(i/(data.length-1))*W,y:H-((v-min)/range)*(H-40)-20}));
-  // Fill
-  ctx.beginPath();ctx.moveTo(pts[0].x,H);
-  pts.forEach(p=>ctx.lineTo(p.x,p.y));
-  ctx.lineTo(pts[pts.length-1].x,H);ctx.closePath();
-  const grad=ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0,color+'33');grad.addColorStop(1,color+'00');
-  ctx.fillStyle=grad;ctx.fill();
+function drawChart(data, color){
+  const cv = document.getElementById('miniChart');
+  if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width = cv.offsetWidth * 2;
+  const H = cv.height = 320;
+  ctx.clearRect(0, 0, W, H);
+
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const pad = 20;
+
+  // Determine color by first vs last value
+  const isUp = data[data.length-1] >= data[0];
+  const lineColor = color || (isUp ? '#00d4aa' : '#ef4444');
+
+  const pts = data.map((v, i) => ({
+    x: (i / (data.length - 1)) * W,
+    y: H - pad - ((v - min) / range) * (H - pad * 2)
+  }));
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, lineColor + '28');
+  grad.addColorStop(1, lineColor + '00');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, H);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
   // Line
-  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
-  pts.forEach(p=>ctx.lineTo(p.x,p.y));
-  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = lineColor;
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Dots at start and end
+  [pts[0], pts[pts.length-1]].forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = lineColor;
+    ctx.fill();
+  });
 }
 
 function renderAnalysis(sym){
@@ -263,7 +296,7 @@ function renderAnalysis(sym){
     </div>
   `;
   setTimeout(()=>{
-    drawChart(a.chartData,up?'#00d4aa':'#ef4444');
+    drawChart(a.chartData);
   },50);
 
   // mark active
@@ -297,5 +330,7 @@ function searchStocks(q){
 renderStockList(stocks);
 renderAnalysis('RELIANCE');
 </script>
+
+<script src="nav.js"></script>
 </body>
 </html>
