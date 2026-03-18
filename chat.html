@@ -170,7 +170,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 </div>
 
 <script>
-const API_URL='https://api.anthropic.com/v1/messages';
+const API_URL='http://localhost:3000/api/chat';
 const SYS=`You are Market AI, an expert AI stock market analyst for Indian markets (NSE/BSE). You have access to live market data, the user's portfolio, and corporate filings.
 
 User's portfolio: RELIANCE (50 shares, avg ₹2,810, LTP ₹2,947), TCS (20 shares, avg ₹3,650, LTP ₹3,812), HDFCBANK (30 shares, avg ₹1,710, LTP ₹1,644), BAJAJFINSV (15 shares, avg ₹1,720, LTP ₹1,823).
@@ -186,14 +186,19 @@ Rules:
 - Always consider the user's existing portfolio when giving advice
 - Use HTML tags like <strong>, <br> for formatting in responses
 - Include buy/hold/sell signals with confidence scores when asked about specific stocks
-- Keep responses concise but comprehensive — max 300 words unless a deep analysis is requested`;
-
+const API_URL='http://localhost:3000/api/chat';
+const SYS=`You are Market AI, an expert AI analyst for Indian markets.`;
+const PORTFOLIO=[
+  {sym:'RELIANCE',qty:50,avg:2810,ltp:2947},
+  {sym:'TCS',qty:20,avg:3650,ltp:3812},
+  {sym:'HDFCBANK',qty:30,avg:1710,ltp:1644},
+  {sym:'BAJAJFINSV',qty:15,avg:1720,ltp:1823}
+];
 const chat=document.getElementById('chatBody');
 const inp=document.getElementById('chatIn');
 const btn=document.getElementById('sendBtn');
 let hist=[];
 let busy=false;
-
 function addMsg(role,html){
   const d=document.createElement('div');
   d.className=`msg ${role}`;
@@ -221,24 +226,19 @@ async function send(){
     const res=await fetch(API_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:SYS,
-        messages:hist
-      })
+      body:JSON.stringify({messages:hist,portfolio:PORTFOLIO})
     });
+    if(!res.ok){const err=await res.json();throw new Error(err.error||'Server error');}
     const data=await res.json();
     removeTyping();
-    let reply=data.content?.[0]?.text||'Sorry, I could not get a response. Please try again.';
-    // wrap source tags nicely
+    let reply=data.content?.[0]?.text||'Sorry, no response received.';
     reply=reply.replace(/\[Source: ([^\]]+)\]/g,'<span class="source-tag">📎 $1</span>');
     addMsg('ai',reply);
     hist.push({role:'assistant',content:data.content?.[0]?.text||reply});
-    if(hist.length>20)hist=hist.slice(-20); // rolling window
+    if(hist.length>20)hist=hist.slice(-20);
   }catch(e){
     removeTyping();
-    addMsg('ai','Connection error. Make sure the backend server is running.<br><small style="color:var(--muted)">Run: cd backend && node server.js</small>');
+    addMsg('ai',`<strong>Error:</strong> ${e.message}<br><br>Make sure backend is running:<br><code style="font-size:12px;color:var(--green)">cd backend → node server.js</code>`);
   }
   busy=false;btn.disabled=false;inp.focus();
 }
