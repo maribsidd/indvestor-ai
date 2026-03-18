@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pattern Intelligence — IndVestor AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1b2e;--card:#111e30;--card2:#162540;
+  --green:#00d4aa;--gold:#f59e0b;--red:#ef4444;--blue:#1a6cff;
+  --text:#e2eaf4;--muted:#5a7a99;--border:#1e3050;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:var(--muted);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;text-decoration:none;transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(0,212,170,.08)}
+.user-dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer}
+
+.layout{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - 56px)}
+
+/* ── STOCK LIST PANEL ── */
+.stock-panel{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sp-search{padding:12px}
+.sp-search input{width:100%;padding:9px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none;font-family:'Poppins',sans-serif}
+.sp-search input:focus{border-color:var(--green)}
+.sp-search input::placeholder{color:var(--muted)}
+.sp-list{flex:1;overflow-y:auto;padding:0 8px 8px}
+.sp-list::-webkit-scrollbar{width:4px}
+.sp-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.stock-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .15s}
+.stock-item:hover{background:var(--card)}
+.stock-item.active{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2)}
+.si-left .si-sym{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;color:var(--text)}
+.si-left .si-name{font-size:11px;color:var(--muted);margin-top:1px}
+.si-right{text-align:right}
+.si-price{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text)}
+.si-chg{font-size:11px;margin-top:1px}
+.up{color:var(--green)}.dn{color:var(--red)}
+.si-pattern{font-size:10px;padding:2px 6px;border-radius:3px;margin-top:3px;display:inline-block}
+.pat-b{background:rgba(0,212,170,.1);color:var(--green)}
+.pat-y{background:rgba(245,158,11,.1);color:var(--gold)}
+.pat-r{background:rgba(239,68,68,.1);color:var(--red)}
+
+/* ── ANALYSIS PANEL ── */
+.analysis{flex:1;overflow-y:auto;padding:24px}
+.analysis::-webkit-scrollbar{width:4px}
+.analysis::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.an-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.ah-left .stock-name{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700}
+.ah-left .stock-full{font-size:13px;color:var(--muted);margin-top:2px}
+.price-block{text-align:right}
+.pb-price{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:500}
+.pb-chg{font-size:14px;margin-top:2px}
+
+/* MINI CHART */
+.chart-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px}
+.chart-title{font-size:12px;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:1px}
+canvas{width:100%;height:160px;display:block}
+
+/* PATTERN CARDS */
+.patterns-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.pat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.pc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.pc-name{font-size:14px;font-weight:600;color:var(--text)}
+.pc-badge{padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.pc-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.pc-stats{display:flex;gap:16px}
+.pcs{font-size:12px;color:var(--muted)}
+.pcs span{font-family:'IBM Plex Mono',monospace;color:var(--text);font-weight:500}
+.win-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:6px}
+.win-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--green),var(--gold))}
+
+/* LEVELS */
+.levels-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px}
+.lc-title{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--text)}
+.level-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.level-row:last-child{border-bottom:none}
+.lr-label{font-size:12px;color:var(--muted)}
+.lr-val{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
+.lr-note{font-size:11px;color:var(--muted)}
+
+/* INDICATORS */
+.ind-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.ind-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.ic-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.ic-val{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:500;margin-top:4px}
+.ic-sig{font-size:11px;margin-top:2px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="location.href='index.html'">Ind<span>Vestor</span> AI</div>
+  <div class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="radar.html">Opportunity Radar</a>
+    <a href="charts.html" class="active">Pattern Intelligence</a>
+    <a href="chat.html">Market AI</a>
+  </div>
+  <div class="user-dot">A</div>
+</nav>
+
+<div class="layout">
+  <!-- STOCK PANEL -->
+  <div class="stock-panel">
+    <div class="sp-search">
+      <input type="text" placeholder="Search NSE stocks..." id="stockSearch" oninput="searchStocks(this.value)"/>
+    </div>
+    <div class="sp-list" id="stockList"></div>
+  </div>
+
+  <!-- ANALYSIS PANEL -->
+  <div class="analysis" id="analysisPanel"></div>
+</div>
+
+<script>
+const stocks=[
+  {sym:'RELIANCE',name:'Reliance Industries',price:'2,947.55',chg:'+1.2%',up:true,pat:'Bullish Breakout',patc:'pat-b'},
+  {sym:'TCS',name:'Tata Consultancy Services',price:'3,812.30',chg:'+0.4%',up:true,pat:'Cup & Handle',patc:'pat-b'},
+  {sym:'HDFCBANK',name:'HDFC Bank',price:'1,643.90',chg:'-0.8%',up:false,pat:'Support Test',patc:'pat-y'},
+  {sym:'INFOSYS',name:'Infosys Limited',price:'1,521.15',chg:'+0.7%',up:true,pat:'Bull Flag',patc:'pat-b'},
+  {sym:'ICICIBANK',name:'ICICI Bank',price:'1,289.45',chg:'+1.4%',up:true,pat:'Golden Cross',patc:'pat-b'},
+  {sym:'BAJAJFINSV',name:'Bajaj Finserv',price:'1,823.40',chg:'+2.1%',up:true,pat:'Ascending Triangle',patc:'pat-b'},
+  {sym:'ADANIPORTS',name:'Adani Ports & SEZ',price:'1,378.25',chg:'-1.1%',up:false,pat:'Head & Shoulders',patc:'pat-r'},
+  {sym:'MARUTI',name:'Maruti Suzuki India',price:'12,845.00',chg:'+0.6%',up:true,pat:'Breakout Retest',patc:'pat-b'},
+  {sym:'SUNPHARMA',name:'Sun Pharmaceutical',price:'1,876.40',chg:'+0.9%',up:true,pat:'Inverse H&S',patc:'pat-b'},
+  {sym:'TITAN',name:'Titan Company',price:'3,456.90',chg:'+1.7%',up:true,pat:'Bull Flag',patc:'pat-b'},
+  {sym:'WIPRO',name:'Wipro Limited',price:'486.70',chg:'-0.3%',up:false,pat:'Range-bound',patc:'pat-y'},
+  {sym:'COALINDIA',name:'Coal India Limited',price:'487.35',chg:'+0.5%',up:true,pat:'Double Bottom',patc:'pat-b'},
+  {sym:'LTIM',name:'LTIMindtree',price:'5,234.65',chg:'-0.2%',up:false,pat:'Resistance Zone',patc:'pat-y'},
+  {sym:'DRREDDY',name:'Dr. Reddy\'s Laboratories',price:'6,213.80',chg:'+1.3%',up:true,pat:'Momentum Breakout',patc:'pat-b'},
+];
+
+const analyses={
+  RELIANCE:{
+    patterns:[
+      {name:'Bullish Breakout',badge:'bg',badgeTxt:'BULLISH',desc:'Price has broken above the ₹2,920 horizontal resistance after 18 sessions of consolidation. Volume on the breakout candle was 2.3× average — confirming genuine institutional demand, not retail noise.',win:78,tgt:'₹3,180',sl:'₹2,880'},
+      {name:'RSI Divergence',badge:'bg',badgeTxt:'CONFIRM',desc:'RSI was making higher lows while price consolidated — classic bullish divergence. RSI now at 64, not yet overbought. Suggests momentum has room to run.',win:71,tgt:'₹3,100',sl:'₹2,890'},
+    ],
+    levels:[
+      {label:'52-Week High',val:'₹3,024',note:'All-time high zone',cl:'up'},
+      {label:'Strong Resistance',val:'₹2,980',note:'Previous swing high',cl:'dn'},
+      {label:'Current Price',val:'₹2,947.55',note:'Last traded price',cl:''},
+      {label:'Breakout Level',val:'₹2,920',note:'Now support — key level',cl:'up'},
+      {label:'Support Zone',val:'₹2,870–2,890',note:'50-day EMA cluster',cl:''},
+      {label:'Stop Loss',val:'₹2,850',note:'Below consolidation low',cl:'dn'},
+    ],
+    inds:[
+      {label:'RSI (14)',val:'64.2',sig:'Bullish',col:'up'},{label:'MACD',val:'+18.4',sig:'Crossover',col:'up'},
+      {label:'50 EMA',val:'₹2,892',sig:'Above',col:'up'},{label:'200 EMA',val:'₹2,744',sig:'Far Above',col:'up'},
+      {label:'Volume',val:'2.3×',sig:'Above Avg',col:'up'},{label:'ADX',val:'28.4',sig:'Trending',col:'up'},
+    ],
+    chartData:[2780,2790,2820,2810,2840,2830,2860,2855,2880,2875,2900,2890,2915,2910,2920,2935,2940,2948],
+  },
+  ADANIPORTS:{
+    patterns:[
+      {name:'Head & Shoulders',badge:'br',badgeTxt:'BEARISH',desc:'Classic H&S pattern forming at the ₹1,400 resistance. Left shoulder at ₹1,380, head at ₹1,423, right shoulder forming near ₹1,385. Neckline at ₹1,340. If price breaks neckline with volume, measured target is ₹1,260.',win:68,tgt:'₹1,260',sl:'₹1,410'},
+      {name:'Volume Divergence',badge:'br',badgeTxt:'CAUTION',desc:'Each successive rally is on declining volume — a bearish warning. The last 5 up-days had below-average volume while down-days were on higher volume. Distribution pattern.',win:61,tgt:'₹1,300',sl:'₹1,400'},
+    ],
+    levels:[
+      {label:'Resistance / Head',val:'₹1,423',note:'Pattern high',cl:'dn'},
+      {label:'Right Shoulder',val:'₹1,385',note:'Current zone',cl:'dn'},
+      {label:'Current Price',val:'₹1,378',note:'Last traded price',cl:''},
+      {label:'Neckline',val:'₹1,340',note:'Key support — watch closely',cl:'dn'},
+      {label:'H&S Target',val:'₹1,260',note:'If neckline breaks',cl:'dn'},
+      {label:'Stop Loss (Short)',val:'₹1,415',note:'Above right shoulder',cl:'up'},
+    ],
+    inds:[
+      {label:'RSI (14)',val:'43.1',sig:'Weakening',col:'dn'},{label:'MACD',val:'-4.2',sig:'Bearish Cross',col:'dn'},
+      {label:'50 EMA',val:'₹1,392',sig:'Below',col:'dn'},{label:'200 EMA',val:'₹1,318',sig:'Above',col:'up'},
+      {label:'Volume',val:'0.7×',sig:'Below Avg',col:'dn'},{label:'ADX',val:'22.1',sig:'Weak Trend',col:'dn'},
+    ],
+    chartData:[1310,1340,1370,1380,1360,1375,1390,1410,1423,1405,1390,1385,1380,1378,1375,1380,1378,1378],
+  }
+};
+
+const defaultAnalysis=analyses.RELIANCE;
+let curSym='RELIANCE';
+let filteredStocks=[...stocks];
+
+function drawChart(data,color='#00d4aa'){
+  const c=document.getElementById('miniChart');
+  if(!c)return;
+  const ctx=c.getContext('2d');
+  const W=c.width=c.offsetWidth*2;const H=c.height=320;
+  ctx.clearRect(0,0,W,H);
+  const min=Math.min(...data),max=Math.max(...data),range=max-min;
+  const pts=data.map((v,i)=>({x:(i/(data.length-1))*W,y:H-((v-min)/range)*(H-40)-20}));
+  // Fill
+  ctx.beginPath();ctx.moveTo(pts[0].x,H);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,H);ctx.closePath();
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,color+'33');grad.addColorStop(1,color+'00');
+  ctx.fillStyle=grad;ctx.fill();
+  // Line
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
+}
+
+function renderAnalysis(sym){
+  curSym=sym;
+  const s=stocks.find(x=>x.sym===sym);
+  const a=analyses[sym]||analyses.RELIANCE;
+  const up=s?s.up:true;
+  document.getElementById('analysisPanel').innerHTML=`
+    <div class="an-header">
+      <div class="ah-left">
+        <div class="stock-name">${sym}</div>
+        <div class="stock-full">${s?s.name:sym} · NSE Equity</div>
+      </div>
+      <div class="price-block">
+        <div class="pb-price ${up?'up':'dn'}">${s?'₹'+s.price:'—'}</div>
+        <div class="pb-chg ${up?'up':'dn'}">${s?s.chg:''} today</div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">30-Day Price Action</div>
+      <canvas id="miniChart" style="height:160px"></canvas>
+    </div>
+    <div class="section-label" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Detected Patterns</div>
+    <div class="patterns-grid">
+      ${a.patterns.map(p=>`
+        <div class="pat-card">
+          <div class="pc-top"><div class="pc-name">${p.name}</div><div class="pc-badge ${p.badge}">${p.badgeTxt}</div></div>
+          <div class="pc-desc">${p.desc}</div>
+          <div class="pc-stats">
+            <div class="pcs">Win Rate <span>${p.win}%</span></div>
+            <div class="pcs">Target <span>${p.tgt}</span></div>
+            <div class="pcs">Stop <span>${p.sl}</span></div>
+          </div>
+          <div class="win-bar"><div class="win-fill" style="width:${p.win}%"></div></div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="section-label" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Key Levels</div>
+    <div class="levels-card">
+      <div class="lc-title">Support / Resistance Map</div>
+      ${a.levels.map(l=>`
+        <div class="level-row">
+          <div class="lr-label">${l.label}</div>
+          <div class="lr-val ${l.cl}">${l.val}</div>
+          <div class="lr-note">${l.note}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="section-label" style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Technical Indicators</div>
+    <div class="ind-grid">
+      ${a.inds.map(i=>`
+        <div class="ind-card">
+          <div class="ic-label">${i.label}</div>
+          <div class="ic-val ${i.col}">${i.val}</div>
+          <div class="ic-sig ${i.col}">${i.sig}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  setTimeout(()=>{
+    drawChart(a.chartData,up?'#00d4aa':'#ef4444');
+  },50);
+
+  // mark active
+  document.querySelectorAll('.stock-item').forEach(el=>el.classList.remove('active'));
+  const el=document.querySelector(`[data-sym="${sym}"]`);
+  if(el)el.classList.add('active');
+}
+
+function renderStockList(arr){
+  document.getElementById('stockList').innerHTML=arr.map(s=>`
+    <div class="stock-item ${s.sym===curSym?'active':''}" data-sym="${s.sym}" onclick="renderAnalysis('${s.sym}')">
+      <div class="si-left">
+        <div class="si-sym">${s.sym}</div>
+        <div class="si-name">${s.name.split(' ').slice(0,2).join(' ')}</div>
+        <span class="si-pattern ${s.patc}">${s.pat}</span>
+      </div>
+      <div class="si-right">
+        <div class="si-price">₹${s.price}</div>
+        <div class="si-chg ${s.up?'up':'dn'}">${s.chg}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function searchStocks(q){
+  const qq=q.toLowerCase();
+  filteredStocks=q?stocks.filter(s=>s.sym.toLowerCase().includes(qq)||s.name.toLowerCase().includes(qq)):stocks;
+  renderStockList(filteredStocks);
+}
+
+renderStockList(stocks);
+renderAnalysis('RELIANCE');
+</script>
+</body>
+</html>

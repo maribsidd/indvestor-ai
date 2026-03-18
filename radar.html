@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Opportunity Radar — IndVestor AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1b2e;--card:#111e30;--card2:#162540;
+  --green:#00d4aa;--gold:#f59e0b;--red:#ef4444;--blue:#1a6cff;
+  --text:#e2eaf4;--muted:#5a7a99;--border:#1e3050;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:var(--muted);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;text-decoration:none;transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(0,212,170,.08)}
+.user-dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer}
+
+.page-wrap{max-width:1100px;margin:0 auto;padding:28px 20px}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.ph-left h1{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700}
+.ph-left h1 span{color:var(--green)}
+.ph-left p{font-size:13px;color:var(--muted);margin-top:4px}
+.live-dot{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--green);font-family:'IBM Plex Mono',monospace}
+.live-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* FILTER BAR */
+.filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{padding:7px 16px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.5px}
+.filter-btn:hover{border-color:var(--green);color:var(--text)}
+.filter-btn.active{background:rgba(0,212,170,.1);border-color:var(--green);color:var(--green)}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.stat-card .sl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.stat-card .sv{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:500;margin-top:4px}
+.sv.g{color:var(--green)}.sv.y{color:var(--gold)}.sv.r{color:var(--red)}.sv.b{color:var(--blue)}
+
+/* SIGNAL CARDS */
+.signals{display:flex;flex-direction:column;gap:12px}
+.sig-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:all .2s}
+.sig-card:hover{border-color:var(--card2);background:var(--card2)}
+.sig-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.sig-left{display:flex;gap:14px;align-items:flex-start;flex:1}
+.sig-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.icon-g{background:rgba(0,212,170,.1)}.icon-y{background:rgba(245,158,11,.1)}.icon-r{background:rgba(239,68,68,.1)}.icon-b{background:rgba(26,108,255,.1)}
+.sig-info .si-title{font-size:14px;font-weight:600;color:var(--text)}
+.sig-info .si-stock{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px}
+.sig-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.sig-badge{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.bg{background:rgba(0,212,170,.1);color:var(--green)}
+.by{background:rgba(245,158,11,.1);color:var(--gold)}
+.br{background:rgba(239,68,68,.1);color:var(--red)}
+.bb{background:rgba(26,108,255,.1);color:var(--blue)}
+.sig-time{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.sig-body{margin-top:12px;font-size:13px;color:var(--muted);line-height:1.65;border-top:1px solid var(--border);padding-top:12px}
+.sig-body strong{color:var(--text)}
+.sig-meta{display:flex;gap:16px;margin-top:10px}
+.sm-item{font-size:12px;color:var(--muted)}
+.sm-item span{color:var(--text);font-weight:500;font-family:'IBM Plex Mono',monospace}
+.sig-expand{font-size:12px;color:var(--green);cursor:pointer;margin-top:8px;display:inline-block}
+
+/* DETAIL DRAWER */
+.drawer{display:none;position:fixed;right:0;top:0;height:100vh;width:420px;background:var(--surface);border-left:1px solid var(--border);z-index:200;padding:24px;overflow-y:auto}
+.drawer.open{display:block;animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
+.dr-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+.dr-close:hover{color:var(--text)}
+.dr-title{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;margin-top:8px}
+.dr-stock{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);margin-top:4px;margin-bottom:20px}
+.dr-section{margin-bottom:20px}
+.dr-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.dr-text{font-size:13px;color:var(--text);line-height:1.7}
+.dr-score{display:flex;align-items:center;gap:12px;margin-top:8px}
+.score-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--gold))}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;color:var(--green)}
+.dr-actions{display:flex;gap:10px;margin-top:20px}
+.dr-btn{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:none;color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.dr-btn.primary{background:var(--green);border-color:var(--green);color:#000;font-weight:600}
+.dr-btn:hover:not(.primary){border-color:var(--green);color:var(--green)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+.overlay.open{display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="location.href='index.html'">Ind<span>Vestor</span> AI</div>
+  <div class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="radar.html" class="active">Opportunity Radar</a>
+    <a href="charts.html">Pattern Intelligence</a>
+    <a href="chat.html">Market AI</a>
+  </div>
+  <div class="user-dot">A</div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-head">
+    <div class="ph-left">
+      <h1>Opportunity <span>Radar</span></h1>
+      <p>AI-detected signals from filings, deals, and management commentary — updated every 15 min</p>
+    </div>
+    <div class="live-dot">LIVE &nbsp;·&nbsp; NSE/BSE FEED</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="sl">Signals Today</div><div class="sv g">47</div></div>
+    <div class="stat-card"><div class="sl">Insider Buys</div><div class="sv b">12</div></div>
+    <div class="stat-card"><div class="sl">Risk Flags</div><div class="sv r">6</div></div>
+    <div class="stat-card"><div class="sl">Bulk Deals</div><div class="sv y">18</div></div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters" id="filters">
+    <button class="filter-btn active" onclick="filterSigs(this,'all')">All Signals</button>
+    <button class="filter-btn" onclick="filterSigs(this,'insider')">Insider Trades</button>
+    <button class="filter-btn" onclick="filterSigs(this,'bulk')">Bulk / Block Deals</button>
+    <button class="filter-btn" onclick="filterSigs(this,'filing')">Quarterly Filings</button>
+    <button class="filter-btn" onclick="filterSigs(this,'regulatory')">Regulatory</button>
+    <button class="filter-btn" onclick="filterSigs(this,'mgmt')">Management Commentary</button>
+  </div>
+
+  <!-- SIGNALS LIST -->
+  <div class="signals" id="sigList"></div>
+</div>
+
+<!-- DRAWER -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="dr-close" onclick="closeDrawer()">✕</button>
+  <div id="drContent"></div>
+</div>
+
+<script>
+const sigs=[
+  {
+    cat:'insider',icon:'icon-g',emoji:'👤',badge:'bg',bl:'INSIDER BUY',
+    title:'CFO Accumulation — 2nd Consecutive Month',
+    stock:'BAJAJFINSV · NSE · ₹1,823 Cr mkt cap',
+    time:'09:34 AM',
+    body:'<strong>Bajaj Finserv CFO Sanjiv Bajaj</strong> purchased 14,200 shares worth ₹4.2 Cr at ₹2,958 average. This is the second consecutive month of C-suite buying. Insider accumulation at this scale, when combined with the recent NPA improvement commentary, is a historically strong precursor to price appreciation in NBFC stocks.',
+    score:82,
+    details:{
+      why:'Two-month consecutive C-suite buying is statistically significant. SEBI filings show no pledged shares. Management has skin in the game.',
+      data:'14,200 shares · ₹4.2 Cr · Avg ₹2,958 · Mode: Secondary Market',
+      hist:'Last 3 insider buys at Bajaj Finserv saw avg 14% appreciation within 60 days.',
+      action:'Add to watchlist. Confirm with next quarterly result before entry.'
+    }
+  },
+  {
+    cat:'bulk',icon:'icon-b',emoji:'🏦',badge:'bb',bl:'BLOCK DEAL',
+    title:'Foreign Fund Accumulates in Block Deal',
+    stock:'RELIANCE · NSE · ₹18.9 L Cr mkt cap',
+    time:'10:12 AM',
+    body:'<strong>GIC Singapore</strong> acquired 8.2 lakh shares of Reliance Industries via block deal at ₹2,910, totalling ₹238 Cr. Deal size is 2.4× the 3-month average block deal volume. Foreign institutional accumulation at these levels often precedes index-level moves. Telecom and retail segment guidance has been upgraded by two brokerages this week.',
+    score:71,
+    details:{
+      why:'Sovereign wealth fund accumulation at a discount to CMP. Block size unusual.',
+      data:'8,20,000 shares · ₹238 Cr · ₹2,910/share · GIC Singapore',
+      hist:'Past 4 GIC block deals in large-caps: avg 9.2% return in 45 days.',
+      action:'Suitable for medium-term investors. Support at ₹2,890.'
+    }
+  },
+  {
+    cat:'filing',icon:'icon-g',emoji:'📋',badge:'bg',bl:'FILING SIGNAL',
+    title:'NPA Improvement + Guidance Upgrade in Q3 Filing',
+    stock:'HDFCBANK · NSE · ₹12.3 L Cr mkt cap',
+    time:'11:05 AM',
+    body:'HDFC Bank\'s Q3 FY25 regulatory filing shows Gross NPA fell to <strong>1.26% from 1.42%</strong> QoQ — the third consecutive quarter of improvement. The MD\'s commentary used language like "comfortable capital adequacy" and "loan book expansion confidence" — a shift from the cautious tone in Q1. Two broker upgrades followed within 2 hours of the filing.',
+    score:76,
+    details:{
+      why:'Management tone-shift in filings has historically led price by 2-3 weeks.',
+      data:'Gross NPA: 1.26% | Net NPA: 0.33% | PCR: 74.8%',
+      hist:'HDFC Bank tone upgrade in filing → avg 7.1% move in 30 days (4/5 instances).',
+      action:'Strong sector. Consider on dips to ₹1,620.'
+    }
+  },
+  {
+    cat:'regulatory',icon:'icon-r',emoji:'⚠️',badge:'br',bl:'RISK FLAG',
+    title:'SEBI Seeks Clarification on Related-Party Transactions',
+    stock:'ADANIPORTS · NSE · ₹2.8 L Cr mkt cap',
+    time:'12:30 PM',
+    body:'SEBI has issued a formal clarification notice regarding related-party transactions in Adani Ports\'s Q2 FY25 filings. The notice pertains to ₹1,420 Cr in logistics contracts awarded to Adani group entities. Historically, SEBI clarification requests of this nature create short-term overhang. No finding of wrongdoing at this stage.',
+    score:34,
+    details:{
+      why:'Regulatory noise creates institutional hesitancy. Risk-reward skewed negatively short-term.',
+      data:'Transaction value: ₹1,420 Cr | Filing date: 14 Jan 2025 | Notice date: Today',
+      hist:'Similar SEBI notices resolved avg in 45 days. Stock underperforms index during window.',
+      action:'Reduce exposure or hedge. Monitor for resolution before re-entry.'
+    }
+  },
+  {
+    cat:'mgmt',icon:'icon-y',emoji:'🎙️',badge:'by',bl:'MGMT SHIFT',
+    title:'Promoter Commentary Shift: Capex Acceleration',
+    stock:'TITANCO · NSE · ₹3.0 L Cr mkt cap',
+    time:'02:15 PM',
+    body:'Titan\'s board has approved 80 new Tanishq outlets across Tier-2 and Tier-3 cities, with a CapEx envelope of ₹340 Cr. Management commentary in the filing uses the phrase "aggressive premiumisation" for the first time — a departure from "steady expansion." Jewellery same-store-sales growth has been 11% in H1 FY25. The commentary shift combined with rural gold demand uptick is a compound bullish signal.',
+    score:68,
+    details:{
+      why:'CapEx acceleration in consumer retail + management tone upgrade = leading indicator.',
+      data:'80 new stores · ₹340 Cr CapEx · Tier-2/3 focus · Tanishq brand',
+      hist:'Titan CapEx announcements preceded 15-18% moves in 2021 and 2023.',
+      action:'Monitor for entry near ₹3,380 support. Long-term buy.'
+    }
+  },
+  {
+    cat:'bulk',icon:'icon-b',emoji:'🏦',badge:'bg',bl:'BULK DEAL',
+    title:'LIC Adds to Position — Contra Signal',
+    stock:'COALINDIA · NSE · ₹2.1 L Cr mkt cap',
+    time:'03:45 PM',
+    body:'Life Insurance Corporation added 1.1 Cr shares of Coal India at ₹485.50 in a bulk deal, worth ₹534 Cr. LIC\'s accumulation in PSU counters often acts as a contra signal — the insurer typically buys during institutional weakness. Coal India has underperformed Nifty by 8% in the last 30 days, creating a mean-reversion setup.',
+    score:58,
+    details:{
+      why:'LIC buying after 30-day underperformance = mean reversion potential.',
+      data:'1.1 Cr shares · ₹534 Cr · ₹485.50 avg · LIC of India',
+      hist:'LIC contra buys in PSU stocks: 60% hit rate for 10%+ return in 60 days.',
+      action:'Suitable for value-oriented investors. Dividend yield of 6.2% provides downside buffer.'
+    }
+  }
+];
+
+function renderSigs(filter='all'){
+  const sl=document.getElementById('sigList');
+  const filtered=filter==='all'?sigs:sigs.filter(s=>s.cat===filter);
+  sl.innerHTML=filtered.map((s,i)=>`
+    <div class="sig-card" onclick="openDrawer(${sigs.indexOf(s)})">
+      <div class="sig-top">
+        <div class="sig-left">
+          <div class="sig-icon ${s.icon}">${s.emoji}</div>
+          <div class="sig-info">
+            <div class="si-title">${s.title}</div>
+            <div class="si-stock">${s.stock}</div>
+          </div>
+        </div>
+        <div class="sig-right">
+          <div class="sig-badge ${s.badge}">${s.bl}</div>
+          <div class="sig-time">${s.time}</div>
+        </div>
+      </div>
+      <div class="sig-body">${s.body}<br><span class="sig-expand">View full analysis →</span></div>
+    </div>
+  `).join('');
+}
+
+function filterSigs(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSigs(cat);
+}
+
+function openDrawer(idx){
+  const s=sigs[idx];
+  document.getElementById('drContent').innerHTML=`
+    <div class="sig-badge ${s.badge}" style="font-size:10px">${s.bl}</div>
+    <div class="dr-title">${s.title}</div>
+    <div class="dr-stock">${s.stock}</div>
+    <div class="dr-section">
+      <div class="dr-label">AI Confidence Score</div>
+      <div class="dr-score"><div class="score-bar"><div class="score-fill" style="width:${s.score}%"></div></div><div class="score-num">${s.score}/100</div></div>
+    </div>
+    <div class="dr-section">
+      <div class="dr-label">Why This Signal</div>
+      <div class="dr-text">${s.details.why}</div>
+    </div>
+    <div class="dr-section">
+      <div class="dr-label">Raw Data</div>
+      <div class="dr-text" style="font-family:'IBM Plex Mono',monospace;font-size:12px">${s.details.data}</div>
+    </div>
+    <div class="dr-section">
+      <div class="dr-label">Historical Pattern</div>
+      <div class="dr-text">${s.details.hist}</div>
+    </div>
+    <div class="dr-section">
+      <div class="dr-label">Suggested Action</div>
+      <div class="dr-text">${s.details.action}</div>
+    </div>
+    <div class="dr-actions">
+      <button class="dr-btn primary" onclick="alert('Added to portfolio watchlist')">+ Watchlist</button>
+      <button class="dr-btn" onclick="location.href='chat.html'">Analyse in AI Chat</button>
+    </div>
+  `;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+renderSigs();
+</script>
+</body>
+</html>

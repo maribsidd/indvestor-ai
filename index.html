@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IndVestor AI — Intelligence for the Indian Investor</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0d1b2e;--card:#111e30;--card2:#162540;
+  --green:#00d4aa;--green2:#00b894;--gold:#f59e0b;--red:#ef4444;
+  --text:#e2eaf4;--muted:#5a7a99;--border:#1e3050;
+  --blue:#1a6cff;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── SPLASH ── */
+.splash{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:radial-gradient(ellipse at 60% 40%,#0a2040 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.splash::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4aa' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.splash-logo{font-family:'Rajdhani',sans-serif;font-size:64px;font-weight:700;color:var(--text);letter-spacing:-1px;line-height:1}
+.splash-logo span{color:var(--green)}
+.splash-tag{color:var(--muted);font-size:14px;margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+.splash-bar{width:200px;height:2px;background:var(--border);border-radius:2px;margin-top:32px;overflow:hidden}
+.splash-bar::after{content:'';display:block;width:0;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));animation:load 1.6s ease forwards .3s}
+@keyframes load{to{width:100%}}
+.splash-note{font-size:12px;color:var(--muted);margin-top:16px;font-family:'IBM Plex Mono',monospace}
+
+/* ── TICKER ── */
+.ticker-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 0;overflow:hidden;white-space:nowrap}
+.ticker-inner{display:inline-flex;gap:0;animation:ticker 40s linear infinite}
+.ticker-inner:hover{animation-play-state:paused}
+.tick{padding:0 24px;font-family:'IBM Plex Mono',monospace;font-size:12px;border-right:1px solid var(--border)}
+.tick .sym{color:var(--text);font-weight:500}
+.tick .val{color:var(--muted);margin:0 6px}
+.tick .chg{padding:1px 6px;border-radius:3px;font-size:11px;font-weight:500}
+.up{color:var(--green)}.dn{color:var(--red)}
+.chg.up{background:rgba(0,212,170,.1)}.chg.dn{background:rgba(239,68,68,.1)}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── NAV ── */
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;display:none}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer}
+.nav-logo span{color:var(--green)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{color:var(--muted);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;text-decoration:none;transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(0,212,170,.08)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.user-dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ── APP ── */
+.app{display:none;max-width:1200px;margin:0 auto;padding:28px 20px}
+.section-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+
+/* ── MARKET SUMMARY ── */
+.mkt-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.mkt-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.mkt-card .mc-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.mkt-card .mc-val{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;margin-top:4px}
+.mkt-card .mc-chg{font-size:12px;margin-top:4px}
+
+/* ── FEATURES GRID ── */
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:28px}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s}
+.feat-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,212,170,.1)}
+.feat-card:hover::before{opacity:1;background:radial-gradient(ellipse at top left,rgba(0,212,170,.06),transparent)}
+.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.feat-icon.g{background:rgba(0,212,170,.12)}
+.feat-icon.y{background:rgba(245,158,11,.12)}
+.feat-icon.b{background:rgba(26,108,255,.12)}
+.feat-icon.r{background:rgba(239,68,68,.1)}
+.feat-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.feat-tag{display:inline-block;margin-top:14px;padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.tag-g{background:rgba(0,212,170,.12);color:var(--green)}
+.tag-y{background:rgba(245,158,11,.12);color:var(--gold)}
+.tag-b{background:rgba(26,108,255,.12);color:var(--blue)}
+.tag-r{background:rgba(239,68,68,.1);color:var(--red)}
+.feat-arrow{position:absolute;top:24px;right:24px;font-size:18px;color:var(--border);transition:color .2s}
+.feat-card:hover .feat-arrow{color:var(--green)}
+
+/* ── RECENT SIGNALS ── */
+.signals-list{display:flex;flex-direction:column;gap:10px}
+.signal{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:border-color .15s}
+.signal:hover{border-color:var(--card2)}
+.sig-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-g{background:var(--green)}.dot-y{background:var(--gold)}.dot-r{background:var(--red)}
+.sig-body{flex:1}
+.sig-title{font-size:13px;font-weight:500;color:var(--text)}
+.sig-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.sig-time{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+.sig-badge{padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600}
+.badge-g{background:rgba(0,212,170,.1);color:var(--green)}
+.badge-y{background:rgba(245,158,11,.1);color:var(--gold)}
+.badge-r{background:rgba(239,68,68,.1);color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div class="splash" id="splash">
+  <div class="splash-logo">Ind<span>Vestor</span> AI</div>
+  <div class="splash-tag">Intelligence Layer for Indian Markets</div>
+  <div class="splash-bar"></div>
+  <div class="splash-note" id="splashNote">Initialising market data...</div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo" onclick="location.href='index.html'">Ind<span>Vestor</span> AI</div>
+  <div class="nav-links">
+    <a href="index.html" class="active">Dashboard</a>
+    <a href="radar.html">Opportunity Radar</a>
+    <a href="charts.html">Pattern Intelligence</a>
+    <a href="chat.html">Market AI</a>
+  </div>
+  <div class="nav-right">
+    <div class="user-dot">A</div>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-wrap" id="tickerWrap" style="display:none">
+  <div class="ticker-inner" id="tickerInner"></div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+
+  <!-- MARKET SUMMARY -->
+  <div class="section-title">Live Market Snapshot</div>
+  <div class="mkt-row" id="mktRow"></div>
+
+  <!-- FEATURES -->
+  <div class="section-title">AI Modules</div>
+  <div class="feat-grid">
+    <div class="feat-card" onclick="location.href='radar.html'">
+      <div class="feat-arrow">→</div>
+      <div class="feat-icon g">📡</div>
+      <div class="feat-title">Opportunity Radar</div>
+      <div class="feat-desc">Monitors corporate filings, insider trades, bulk deals, and management commentary — surfaces missed signals as daily alerts before the crowd catches on.</div>
+      <span class="feat-tag tag-g">Signal Finder</span>
+    </div>
+    <div class="feat-card" onclick="location.href='charts.html'">
+      <div class="feat-arrow">→</div>
+      <div class="feat-icon y">📊</div>
+      <div class="feat-title">Chart Pattern Intelligence</div>
+      <div class="feat-desc">Real-time breakout, reversal, and divergence detection across the NSE universe — with plain-English explanations and backtested win rates for each stock.</div>
+      <span class="feat-tag tag-y">Pattern Detector</span>
+    </div>
+    <div class="feat-card" onclick="location.href='chat.html'">
+      <div class="feat-arrow">→</div>
+      <div class="feat-icon b">🤖</div>
+      <div class="feat-title">Market AI — Next Gen</div>
+      <div class="feat-desc">Portfolio-aware, multi-step market analysis. Ask anything — from earnings comparisons to sector rotations — and get source-cited, institutional-grade answers.</div>
+      <span class="feat-tag tag-b">AI Chat</span>
+    </div>
+    <div class="feat-card" onclick="alert('Video Engine — coming in next build. Backend in /backend/routes/video.js')">
+      <div class="feat-arrow">→</div>
+      <div class="feat-icon r">🎬</div>
+      <div class="feat-title">AI Market Video Engine</div>
+      <div class="feat-desc">Auto-generates 30–90 sec market update videos from live data — daily wraps, FII/DII flows, IPO trackers, sector race charts. Zero human editing required.</div>
+      <span class="feat-tag tag-r">Coming Soon</span>
+    </div>
+  </div>
+
+  <!-- RECENT SIGNALS -->
+  <div class="section-title">Latest Signals</div>
+  <div class="signals-list" id="signalsList"></div>
+</div>
+
+<script>
+const tickers=[
+  {s:'RELIANCE',v:'2,947.55',c:'+1.2%',up:true},{s:'TCS',v:'3,812.30',c:'+0.4%',up:true},
+  {s:'HDFC BANK',v:'1,643.90',c:'-0.8%',up:false},{s:'INFOSYS',v:'1,521.15',c:'+0.7%',up:true},
+  {s:'ICICI BANK',v:'1,289.45',c:'+1.4%',up:true},{s:'WIPRO',v:'486.70',c:'-0.3%',up:false},
+  {s:'BAJAJ FIN',v:'7,234.80',c:'+2.1%',up:true},{s:'ADANI PORTS',v:'1,378.25',c:'-1.1%',up:false},
+  {s:'MARUTI',v:'12,845.00',c:'+0.6%',up:true},{s:'SUNPHARMA',v:'1,876.40',c:'+0.9%',up:true},
+  {s:'LTIM',v:'5,234.65',c:'-0.2%',up:false},{s:'TITAN',v:'3,456.90',c:'+1.7%',up:true},
+  {s:'NIFTY 50',v:'24,678.50',c:'+0.5%',up:true},{s:'SENSEX',v:'81,234.70',c:'+0.4%',up:true},
+  {s:'BANK NIFTY',v:'52,341.25',c:'+0.8%',up:true},{s:'NIFTY IT',v:'37,892.40',c:'+0.6%',up:true}
+];
+const mktData=[
+  {label:'NIFTY 50',val:'24,678.50',chg:'+118.4 (+0.48%)',up:true},
+  {label:'SENSEX',val:'81,234.70',chg:'+314.2 (+0.39%)',up:true},
+  {label:'BANK NIFTY',val:'52,341.25',chg:'+412.8 (+0.80%)',up:true},
+  {label:'INDIA VIX',val:'13.42',chg:'-0.87 (-6.09%)',up:false}
+];
+const signals=[
+  {dot:'g',title:'BAJAJ FINANCE — Insider Buy Signal',sub:'CFO purchased ₹4.2 Cr worth of shares at market price. Second consecutive month of insider accumulation.',time:'9:34 AM',badge:'badge-g',bl:'STRONG BUY'},
+  {dot:'y',title:'RELIANCE INDUSTRIES — Bulk Deal Alert',sub:'Foreign fund acquired 8.2L shares via block deal at ₹2,910. Above 3-month avg block size.',time:'10:12 AM',badge:'badge-y',bl:'WATCH'},
+  {dot:'g',title:'HDFC BANK — Q3 Filing: NPA Improvement',sub:'Gross NPA dropped to 1.26% from 1.42% QoQ. Management guidance raised for H2 FY25.',time:'11:05 AM',badge:'badge-g',bl:'ACCUMULATE'},
+  {dot:'r',title:'ADANI PORTS — Regulatory Filing',sub:'SEBI has sought clarification on related-party transactions in Q2 FY25 annual filings.',time:'12:30 PM',badge:'badge-r',bl:'RISK FLAG'},
+  {dot:'g',title:'TITAN CO — Store Expansion Filing',sub:'Board approved 80 new Tanishq outlets across Tier-2 cities. CapEx of ₹340 Cr approved.',time:'2:15 PM',badge:'badge-g',bl:'POSITIVE'}
+];
+
+// Build ticker
+const ti=document.getElementById('tickerInner');
+const tickStr=tickers.map(t=>`<div class="tick"><span class="sym">${t.s}</span><span class="val">${t.v}</span><span class="chg ${t.up?'up':'dn'}">${t.c}</span></div>`).join('');
+ti.innerHTML=tickStr+tickStr; // duplicate for seamless loop
+
+// Build market cards
+const mr=document.getElementById('mktRow');
+mktData.forEach(m=>{
+  mr.innerHTML+=`<div class="mkt-card"><div class="mc-label">${m.label}</div><div class="mc-val">${m.val}</div><div class="mc-chg ${m.up?'up':'dn'}">${m.chg}</div></div>`;
+});
+
+// Build signals
+const sl=document.getElementById('signalsList');
+signals.forEach(s=>{
+  sl.innerHTML+=`<div class="signal"><div class="sig-dot dot-${s.dot}"></div><div class="sig-body"><div class="sig-title">${s.title}</div><div class="sig-sub">${s.sub}</div></div><div style="text-align:right"><div class="sig-time">${s.time}</div><div class="sig-badge ${s.badge}" style="margin-top:4px">${s.bl}</div></div></div>`;
+});
+
+// Splash → App transition
+const notes=['Initialising market data...','Connecting to NSE feed...','Loading AI models...','Ready.'];
+let ni=0;
+const nn=document.getElementById('splashNote');
+const nInt=setInterval(()=>{ni++;if(ni<notes.length)nn.textContent=notes[ni];},400);
+setTimeout(()=>{
+  clearInterval(nInt);
+  document.getElementById('splash').style.display='none';
+  document.getElementById('nav').style.display='flex';
+  document.getElementById('tickerWrap').style.display='block';
+  document.getElementById('app').style.display='block';
+},1900);
+</script>
+</body>
+</html>
