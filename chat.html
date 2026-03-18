@@ -4,32 +4,25 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Market AI — IndVestor AI</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{
-  --bg:#060d1a;--surface:#0d1b2e;--card:#111e30;--card2:#162540;
-  --green:#00d4aa;--gold:#f59e0b;--red:#ef4444;--blue:#1a6cff;
-  --text:#e2eaf4;--muted:#5a7a99;--border:#1e3050;
-}
+:root{--bg:#060d1a;--surface:#0d1b2e;--card:#111e30;--card2:#162540;--green:#00d4aa;--green2:#00b894;--gold:#f59e0b;--red:#ef4444;--blue:#1a6cff;--text:#e2eaf4;--muted:#5a7a99;--border:#1e3050;}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
 body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;flex-shrink:0}
-.nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;color:var(--text);cursor:pointer}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;cursor:pointer}
 .nav-logo span{color:var(--green)}
 .nav-links{display:flex;gap:4px}
 .nav-links a{color:var(--muted);font-size:13px;font-weight:500;padding:6px 14px;border-radius:6px;text-decoration:none;transition:all .15s}
 .nav-links a:hover,.nav-links a.active{color:var(--green);background:rgba(0,212,170,.08)}
-.user-dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer}
-
-/* CHAT LAYOUT */
+.user-dot{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--blue));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000}
 .chat-layout{display:grid;grid-template-columns:260px 1fr;flex:1;overflow:hidden}
-
-/* SIDEBAR */
 .chat-sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px;overflow-y:auto}
 .cs-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px}
 .portfolio-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
 .portfolio-item:hover{border-color:var(--green)}
-.pi-sym{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--text)}
+.pi-sym{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500}
 .pi-detail{display:flex;justify-content:space-between;margin-top:4px}
 .pi-qty{font-size:11px;color:var(--muted)}
 .pi-pnl{font-size:11px;font-weight:500}
@@ -37,8 +30,6 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .cs-sep{height:1px;background:var(--border);margin:16px 0}
 .prompt-chip{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 12px;margin-bottom:7px;cursor:pointer;font-size:12px;color:var(--muted);transition:all .15s;line-height:1.4}
 .prompt-chip:hover{border-color:var(--green);color:var(--text)}
-
-/* CHAT MAIN */
 .chat-main{display:flex;flex-direction:column;overflow:hidden}
 .chat-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-shrink:0}
 .ch-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,212,170,.1);display:flex;align-items:center;justify-content:center;font-size:16px}
@@ -47,63 +38,41 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .ch-status{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-family:'IBM Plex Mono',monospace}
 .ch-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-
 .chat-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
 .chat-body::-webkit-scrollbar{width:4px}
 .chat-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-/* MESSAGES */
 .msg{max-width:80%}
 .msg.user{align-self:flex-end}
 .msg.ai{align-self:flex-start}
 .msg-bubble{padding:12px 16px;border-radius:12px;font-size:14px;line-height:1.7}
-.msg.user .msg-bubble{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);color:var(--text);border-radius:12px 12px 4px 12px}
-.msg.ai .msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:12px 12px 12px 4px;color:var(--text)}
+.msg.user .msg-bubble{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2);border-radius:12px 12px 4px 12px}
+.msg.ai .msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:12px 12px 12px 4px}
 .msg-meta{font-size:11px;color:var(--muted);margin-top:5px;font-family:'IBM Plex Mono',monospace}
 .msg.user .msg-meta{text-align:right}
-
-/* AI RICH CONTENT */
-.ai-step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:13px}
-.as-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px}
-.source-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;background:rgba(26,108,255,.1);color:var(--blue);margin:2px}
-.data-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
-.data-table th{text-align:left;padding:6px 10px;background:var(--surface);color:var(--muted);font-weight:500;border-bottom:1px solid var(--border)}
-.data-table td{padding:6px 10px;border-bottom:1px solid rgba(30,48,80,.5);font-family:'IBM Plex Mono',monospace}
-.data-table td.g{color:var(--green)}.data-table td.r{color:var(--red)}.data-table td.y{color:var(--gold)}
-.signal-inline{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;margin-left:4px}
-.sig-g{background:rgba(0,212,170,.1);color:var(--green)}.sig-r{background:rgba(239,68,68,.1);color:var(--red)}.sig-y{background:rgba(245,158,11,.1);color:var(--gold)}
-
-/* THINKING STEPS */
 .thinking-steps{background:rgba(26,108,255,.05);border:1px solid rgba(26,108,255,.15);border-radius:8px;padding:12px;margin-top:10px}
 .ts-title{font-size:11px;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
 .ts-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin-bottom:5px}
 .ts-step::before{content:'✓';color:var(--green);font-size:11px}
-.ts-step.loading::before{content:'⋯';color:var(--blue);animation:pulse .8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* TYPING */
 .typing-dot{display:flex;gap:4px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px 12px 12px 4px;width:60px}
 .typing-dot span{width:6px;height:6px;border-radius:50%;background:var(--muted)}
-.typing-dot span:nth-child(1){animation:td .8s infinite .0s}
+.typing-dot span:nth-child(1){animation:td .8s infinite 0s}
 .typing-dot span:nth-child(2){animation:td .8s infinite .15s}
 .typing-dot span:nth-child(3){animation:td .8s infinite .3s}
 @keyframes td{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
-
-/* INPUT */
+.source-tag{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;background:rgba(26,108,255,.1);color:var(--blue);margin:2px}
 .chat-input-wrap{padding:16px 20px;border-top:1px solid var(--border);flex-shrink:0}
 .input-row{display:flex;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px;transition:border-color .2s}
 .input-row:focus-within{border-color:var(--green)}
 .input-row input{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;font-family:'Poppins',sans-serif}
 .input-row input::placeholder{color:var(--muted)}
-.send-btn{width:36px;height:36px;border-radius:8px;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;flex-shrink:0}
-.send-btn:hover{background:var(--green2,#00b894)}
+.send-btn{width:36px;height:36px;border-radius:8px;background:var(--green);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;flex-shrink:0;color:#000;font-weight:700}
+.send-btn:hover{background:var(--green2)}
 .send-btn:disabled{background:var(--border);cursor:default}
 </style>
 </head>
 <body>
-
 <nav>
-  <div class="nav-logo" onclick="location.href='index.html'">Ind<span>Vestor</span> AI</div>
+  <div class="nav-logo" onclick="window.location.href='index.html'">Ind<span>Vestor</span> AI</div>
   <div class="nav-links">
     <a href="index.html">Dashboard</a>
     <a href="radar.html">Opportunity Radar</a>
@@ -112,9 +81,7 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
   </div>
   <div class="user-dot">A</div>
 </nav>
-
 <div class="chat-layout">
-  <!-- SIDEBAR -->
   <div class="chat-sidebar">
     <div class="cs-title">My Portfolio</div>
     <div class="portfolio-item"><div class="pi-sym">RELIANCE · 50 shares</div><div class="pi-detail"><div class="pi-qty">Avg ₹2,810</div><div class="pi-pnl up">+₹6,877 (+4.9%)</div></div></div>
@@ -124,14 +91,12 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
     <div class="cs-sep"></div>
     <div class="cs-title">Suggested Prompts</div>
     <div class="prompt-chip" onclick="sendPrompt('Compare TCS vs Infosys — which is stronger for Q4 FY25?')">Compare TCS vs Infosys Q4 FY25</div>
-    <div class="prompt-chip" onclick="sendPrompt('Should I hold or sell HDFC Bank? My avg is ₹1,710.')">Hold or sell my HDFC Bank position?</div>
+    <div class="prompt-chip" onclick="sendPrompt('Should I hold or sell HDFC Bank? My avg is 1710.')">Hold or sell my HDFC Bank?</div>
     <div class="prompt-chip" onclick="sendPrompt('What are FII flows telling us about Nifty direction this week?')">FII flow analysis this week</div>
-    <div class="prompt-chip" onclick="sendPrompt('Show me all NSE stocks with upcoming earnings in next 7 days')">Upcoming earnings calendar</div>
+    <div class="prompt-chip" onclick="sendPrompt('Show me NSE stocks with upcoming earnings in next 7 days')">Upcoming earnings calendar</div>
     <div class="prompt-chip" onclick="sendPrompt('Analyse the Nifty IT sector — bullish or bearish?')">Nifty IT sector analysis</div>
-    <div class="prompt-chip" onclick="sendPrompt('Summarise all bulk deals today and rate them')">Today\'s bulk deals rated</div>
+    <div class="prompt-chip" onclick="sendPrompt('Summarise all bulk deals today and rate them')">Today bulk deals rated</div>
   </div>
-
-  <!-- CHAT MAIN -->
   <div class="chat-main">
     <div class="chat-header">
       <div class="ch-icon">🤖</div>
@@ -141,17 +106,16 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
       </div>
       <div class="ch-status">LIVE · NSE DATA</div>
     </div>
-
     <div class="chat-body" id="chatBody">
       <div class="msg ai">
         <div class="msg-bubble">
-          Namaste! I'm your AI market analyst — I have access to your portfolio, live NSE data, corporate filings, and technical patterns.<br><br>
-          I can help you with stock analysis, portfolio review, earnings comparisons, FII/DII flows, sector rotation, and more. Ask me anything.
+          Namaste! I am your AI market analyst — I have access to your portfolio, live NSE data, corporate filings, and technical patterns.<br><br>
+          Ask me anything about stocks, earnings, sector rotation, FII/DII flows, or your portfolio.
           <div class="thinking-steps">
             <div class="ts-title">Connected Data Sources</div>
             <div class="ts-step">NSE live feed — OHLCV, F&O data</div>
             <div class="ts-step">BSE corporate filings (last 90 days)</div>
-            <div class="ts-step">Your portfolio (4 stocks, ₹1.2L invested)</div>
+            <div class="ts-step">Your portfolio (4 stocks)</div>
             <div class="ts-step">Bulk/block deal registry</div>
             <div class="ts-step">FII/DII daily flows</div>
           </div>
@@ -159,92 +123,88 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
         <div class="msg-meta">Market AI · Just now</div>
       </div>
     </div>
-
     <div class="chat-input-wrap">
       <div class="input-row">
-        <input type="text" placeholder="Ask anything — earnings, charts, portfolio, sector..." id="chatIn" onkeydown="if(event.key==='Enter')send()"/>
+        <input type="text" placeholder="Ask anything — earnings, charts, portfolio, sectors..." id="chatIn" onkeydown="if(event.key==='Enter')send()"/>
         <button class="send-btn" id="sendBtn" onclick="send()">↑</button>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-const API_URL='http://localhost:3000/api/chat';
-const SYS=`You are Market AI, an expert AI stock market analyst for Indian markets (NSE/BSE). You have access to live market data, the user's portfolio, and corporate filings.
-
-User's portfolio: RELIANCE (50 shares, avg ₹2,810, LTP ₹2,947), TCS (20 shares, avg ₹3,650, LTP ₹3,812), HDFCBANK (30 shares, avg ₹1,710, LTP ₹1,644), BAJAJFINSV (15 shares, avg ₹1,720, LTP ₹1,823).
-
-Market context (today): NIFTY 50 at 24,678 (+0.5%), BANK NIFTY at 52,341 (+0.8%), India VIX at 13.42 (-6%), FII net buyers ₹1,240 Cr today, DII net buyers ₹890 Cr.
-
-Rules:
-- Always cite data with [Source: NSE Filing], [Source: Block Deal Registry], etc.
-- Give multi-step reasoning, not one-liners
-- Use ₹ (Rupee) for all prices
-- Be specific with numbers and price levels
-- Format responses with clear sections when needed
-- Always consider the user's existing portfolio when giving advice
-- Use HTML tags like <strong>, <br> for formatting in responses
-- Include buy/hold/sell signals with confidence scores when asked about specific stocks
-const API_URL='http://localhost:3000/api/chat';
-const SYS=`You are Market AI, an expert AI analyst for Indian markets.`;
-const PORTFOLIO=[
+var API_URL = 'http://localhost:3000/api/chat';
+var PORTFOLIO = [
   {sym:'RELIANCE',qty:50,avg:2810,ltp:2947},
   {sym:'TCS',qty:20,avg:3650,ltp:3812},
   {sym:'HDFCBANK',qty:30,avg:1710,ltp:1644},
   {sym:'BAJAJFINSV',qty:15,avg:1720,ltp:1823}
 ];
-const chat=document.getElementById('chatBody');
-const inp=document.getElementById('chatIn');
-const btn=document.getElementById('sendBtn');
-let hist=[];
-let busy=false;
-function addMsg(role,html){
-  const d=document.createElement('div');
-  d.className=`msg ${role}`;
-  d.innerHTML=`<div class="msg-bubble">${html}</div><div class="msg-meta">${role==='user'?'You':'Market AI'} · Just now</div>`;
+var chat = document.getElementById('chatBody');
+var inp = document.getElementById('chatIn');
+var btn = document.getElementById('sendBtn');
+var hist = [];
+var busy = false;
+
+function addMsg(role, html) {
+  var d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.innerHTML = '<div class="msg-bubble">' + html + '</div><div class="msg-meta">' + (role==='user'?'You':'Market AI') + ' · Just now</div>';
   chat.appendChild(d);
-  chat.scrollTop=chat.scrollHeight;
+  chat.scrollTop = chat.scrollHeight;
 }
 
-function addTyping(){
-  const d=document.createElement('div');d.className='msg ai';d.id='typing';
-  d.innerHTML='<div class="typing-dot"><span></span><span></span><span></span></div>';
-  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+function addTyping() {
+  var d = document.createElement('div');
+  d.className = 'msg ai';
+  d.id = 'typing';
+  d.innerHTML = '<div class="typing-dot"><span></span><span></span><span></span></div>';
+  chat.appendChild(d);
+  chat.scrollTop = chat.scrollHeight;
 }
 
-function removeTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+function removeTyping() {
+  var t = document.getElementById('typing');
+  if (t) t.remove();
+}
 
-async function send(){
-  const q=inp.value.trim();
-  if(!q||busy)return;
-  inp.value='';busy=true;btn.disabled=true;
-  addMsg('user',q);
-  hist.push({role:'user',content:q});
+async function send() {
+  var q = inp.value.trim();
+  if (!q || busy) return;
+  inp.value = '';
+  busy = true;
+  btn.disabled = true;
+  addMsg('user', q);
+  hist.push({role:'user', content:q});
   addTyping();
-  try{
-    const res=await fetch(API_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({messages:hist,portfolio:PORTFOLIO})
+  try {
+    var res = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({messages: hist, portfolio: PORTFOLIO})
     });
-    if(!res.ok){const err=await res.json();throw new Error(err.error||'Server error');}
-    const data=await res.json();
+    if (!res.ok) {
+      var err = await res.json();
+      throw new Error(err.error || 'Server error ' + res.status);
+    }
+    var data = await res.json();
     removeTyping();
-    let reply=data.content?.[0]?.text||'Sorry, no response received.';
-    reply=reply.replace(/\[Source: ([^\]]+)\]/g,'<span class="source-tag">📎 $1</span>');
-    addMsg('ai',reply);
-    hist.push({role:'assistant',content:data.content?.[0]?.text||reply});
-    if(hist.length>20)hist=hist.slice(-20);
-  }catch(e){
+    var reply = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text : 'No response received.';
+    reply = reply.replace(/\[Source: ([^\]]+)\]/g, '<span class="source-tag">📎 $1</span>');
+    addMsg('ai', reply);
+    hist.push({role:'assistant', content:reply});
+    if (hist.length > 20) hist = hist.slice(-20);
+  } catch(e) {
     removeTyping();
-    addMsg('ai',`<strong>Error:</strong> ${e.message}<br><br>Make sure backend is running:<br><code style="font-size:12px;color:var(--green)">cd backend → node server.js</code>`);
+    addMsg('ai', '<strong>Cannot connect to backend.</strong><br><br>In VS Code terminal run:<br><code style="color:var(--green);font-size:12px">cd backend<br>node server.js</code><br><br>Then try again.');
   }
-  busy=false;btn.disabled=false;inp.focus();
+  busy = false;
+  btn.disabled = false;
+  inp.focus();
 }
 
-function sendPrompt(text){
-  inp.value=text;inp.focus();send();
+function sendPrompt(text) {
+  inp.value = text;
+  send();
 }
 </script>
 </body>
