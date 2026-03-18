@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Groq = require('groq-sdk');
 
-const client = new Groq({ apiKey: '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' });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const SYSTEM = `You are Market AI, an expert AI stock market analyst for Indian markets (NSE/BSE).
 Today's market: NIFTY 50 at 24,678 (+0.5%), BANK NIFTY at 52,341 (+0.8%), India VIX at 13.42.
