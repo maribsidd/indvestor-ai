@@ -88,17 +88,6 @@ Or on Windows — double-click `start.bat`.
 
 ---
 
-## Environment Variables
-
-```
-GROQ_API_KEY=your_groq_api_key_here
-PORT=3000
-```
-
-Get a free Groq key at [console.groq.com](https://console.groq.com).
-
----
-
 ## Connecting Live NSE Data
 
 The demo uses mock signal data. To connect live feeds:
@@ -116,4 +105,4 @@ GitHub: [maribsidd](https://github.com/maribsidd)
 
 ---
 
-*IndVestor AI — ET Markets GenAI Hackathon 2025*
+*IndVestor AI*
